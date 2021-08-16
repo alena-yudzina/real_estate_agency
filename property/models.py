@@ -5,9 +5,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Flat(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200)
-    owners_phonenumber = models.CharField('Номер владельца', max_length=20)
-    owner_pure_phone = PhoneNumberField('Нормализованный номер владельца', blank=True)
     created_at = models.DateTimeField(
         'Когда создано объявление',
         default=timezone.now,
@@ -54,7 +51,7 @@ class Flat(models.Model):
 
     liked_by = models.ManyToManyField(
         User,
-        related_name="liked_posts",
+        related_name='liked_posts',
         verbose_name='Кто лайкнул',
         blank=True)
 
@@ -74,3 +71,17 @@ class Сomplaint(models.Model):
         on_delete=models.CASCADE
     )
     text = models.TextField('Текст жалобы')
+
+
+class Owner(models.Model):
+    owner = models.CharField('ФИО владельца', max_length=200)
+    owners_phonenumber = models.CharField('Номер владельца', max_length=20)
+    owner_pure_phone = PhoneNumberField('Нормализованный номер владельца', blank=True)
+    flats = models.ManyToManyField(
+        Flat,
+        related_name='owners',
+        verbose_name='Квартиры в собственности'
+    )
+
+    def __str__(self):
+        return f'{self.owner}'
